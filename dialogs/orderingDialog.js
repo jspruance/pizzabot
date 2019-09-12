@@ -3,13 +3,16 @@
 
 const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
 const { InputHints, MessageFactory } = require('botbuilder');
-const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { ChoicePrompt, ConfirmPrompt, DateTimePrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { DateResolverDialog } = require('./dateResolverDialog');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const DATE_RESOLVER_DIALOG = 'dateResolverDialog';
 const TEXT_PROMPT = 'textPrompt';
+const SIZE_PROMPT = 'sizePrompt';
+const CHEESE_PROMPT = 'cheesePrompt';
+const DATETIME_PROMPT = 'datetimePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class OrderingDialog extends CancelAndHelpDialog {
@@ -17,13 +20,16 @@ class OrderingDialog extends CancelAndHelpDialog {
         super(id || 'orderingDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
+            .addDialog(new ChoicePrompt(SIZE_PROMPT))
+            .addDialog(new ChoicePrompt(CHEESE_PROMPT))
+            .addDialog(new DateTimePrompt(DATETIME_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new DateResolverDialog(DATE_RESOLVER_DIALOG))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.sizeStep.bind(this),
                 this.cheeseStep.bind(this),
                 this.toppingsStep.bind(this),
-                this.deliveryDateStep.bind(this),
+                this.deliveryTimeStep.bind(this),
                 this.confirmStep.bind(this),
                 this.finalStep.bind(this)
             ]));
@@ -39,8 +45,13 @@ class OrderingDialog extends CancelAndHelpDialog {
 
         if (!orderingDetails.size) {
             const messageText = 'What size pizza would you like?';
-            const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
-            return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
+            return await stepContext.prompt(
+                SIZE_PROMPT, {
+                    prompt: messageText,
+                    choices: ['large', 'medium', 'small'],
+                    retryPrompt: 'Not a valid option'
+                }
+            );
         }
         return await stepContext.next(orderingDetails.size);
     }
@@ -52,11 +63,17 @@ class OrderingDialog extends CancelAndHelpDialog {
         const orderingDetails = stepContext.options;
 
         // Capture the response to the previous step's prompt
-        orderingDetails.size = stepContext.result;
+        orderingDetails.size = stepContext.result.value;
+
         if (!orderingDetails.cheese) {
-            const messageText = 'What kind of cheese would you like on your pizza?';
-            const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
-            return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
+            const messageText = 'What kind of cheese would you like?';
+            return await stepContext.prompt(
+                SIZE_PROMPT, {
+                    prompt: messageText,
+                    choices: ['mozzarella', 'cheddar', 'no cheese'],
+                    retryPrompt: 'Not a valid option'
+                }
+            );
         }
         return await stepContext.next(orderingDetails.cheese);
     }
@@ -68,7 +85,8 @@ class OrderingDialog extends CancelAndHelpDialog {
         const orderingDetails = stepContext.options;
 
         // Capture the response to the previous step's prompt
-        orderingDetails.cheese = stepContext.result;
+        orderingDetails.cheese = stepContext.result.value;
+
         if (!orderingDetails.toppings) {
             const messageText = 'What kind of toppings would you like on your pizza?';
             const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
@@ -81,15 +99,25 @@ class OrderingDialog extends CancelAndHelpDialog {
      * If a travel date has not been provided, prompt for one.
      * This will use the DATE_RESOLVER_DIALOG.
      */
-    async deliveryDateStep(stepContext) {
+    async deliveryTimeStep(stepContext) {
+        // Capture the results of the previous step
         const orderingDetails = stepContext.options;
 
-        // Capture the results of the previous step
         orderingDetails.toppings = stepContext.result;
-        if (!orderingDetails.deliveryDate || this.isAmbiguous(orderingDetails.deliverylDate)) {
-            return await stepContext.beginDialog(DATE_RESOLVER_DIALOG, { date: orderingDetails.deliveryDate });
+
+        const promptMessage = "What time would you like your pizza delivered?";
+        const repromptMessage = "I'm sorry, for best results, please enter  a valid delivery time.";
+
+        if (!orderingDetails.deliveryTime || this.isAmbiguous(orderingDetails.deliveryDate)) {
+            // We were not given any date at all so prompt the user.
+            return await stepContext.prompt(DATETIME_PROMPT,
+                {
+                    prompt: promptMessage,
+                    retryPrompt: repromptMessage
+                });
         }
-        return await stepContext.next(orderingDetails.deliveryDate);
+
+        return await stepContext.next(orderingDetails.deliveryTime);
     }
 
     /**
@@ -99,8 +127,8 @@ class OrderingDialog extends CancelAndHelpDialog {
         const orderingDetails = stepContext.options;
 
         // Capture the results of the previous step
-        orderingDetails.deliveryDate = stepContext.result;
-        const messageText = `Please confirm, I a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery on ${ orderingDetails.deliveryDate }. Is this correct?`;
+        orderingDetails.deliveryTime = this.formatTime(stepContext.result[0].value);
+        const messageText = `Please confirm, I a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery at ${ orderingDetails.deliveryTime }. Is this correct?`;
         const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 
         // Offer a YES/NO prompt.
@@ -116,6 +144,14 @@ class OrderingDialog extends CancelAndHelpDialog {
             return await stepContext.endDialog(orderingDetails);
         }
         return await stepContext.endDialog();
+    }
+
+    formatTime (time) {
+        if (time.charAt(0) === '0') {
+           time = time.slice(1);
+        }
+        const timeSegments = time.split(':');
+        return `${timeSegments[0]}:${timeSegments[1]}`;
     }
 
     isAmbiguous(timex) {
