@@ -94,7 +94,7 @@ class MainDialog extends ComponentDialog {
             // This is where calls to the ordering API service or database would go.
 
             // If the call to the ordering service was successful tell the user.
-            const msg = `Your order for two large pepperoni pizzas has been received and we are now preparing your food. Expected delivery time is 7:00pm.`;
+            const msg = `Thank you for your order! Your ${result.size} ${result.toppings} pizza with ${result.cheese} has been received and is now being prepared. Expected delivery time is ${result.deliveryTime}.`;
             await stepContext.context.sendActivity(msg, msg, InputHints.IgnoringInput);
         }
 

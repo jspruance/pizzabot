@@ -23,7 +23,6 @@ class OrderingDialog extends CancelAndHelpDialog {
             .addDialog(new ChoicePrompt(CHEESE_PROMPT))
             .addDialog(new DateTimePrompt(DATETIME_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
-            .addDialog(new DateResolverDialog(DATE_RESOLVER_DIALOG))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.sizeStep.bind(this),
                 this.cheeseStep.bind(this),
