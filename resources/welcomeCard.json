@@ -1,0 +1,31 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "TextBlock",
+            "size": "default",
+            "weight": "default",
+            "text": "Welcome to Pizza Bot!"
+        },
+        {
+            "type": "Image",
+            "altText": "Pizza Bot",
+            "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+            "size": "stretch"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Fresh and delicious pizza, made with natural ingredients, delivered right to your door!",
+            "wrap": true
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.OpenUrl",
+            "title": "View locations",
+            "url": "http://adaptivecards.io"
+        }
+    ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.0"
+}
