@@ -23,7 +23,7 @@
         {
             "type": "Action.OpenUrl",
             "title": "View locations",
-            "url": "http://adaptivecards.io"
+            "url": "https://www.google.com/search?q=pizza+bellevue%2C+wa"
         }
     ],
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
