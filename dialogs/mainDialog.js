@@ -75,6 +75,8 @@ class MainDialog extends ComponentDialog {
         //     return await stepContext.orderingDialog('orderingDialog');
         // }
 
+        return await stepContext.beginDialog('orderingDialog');
+
         return await stepContext.next();
     }
 

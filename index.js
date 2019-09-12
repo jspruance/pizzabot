@@ -59,7 +59,7 @@ const userState = new UserState(memoryStorage);
 // const luisRecognizer = new PizzaOrderRecognizer(luisConfig);
 
 // Create the main dialog.
-const orderingDialog = new OrderingDialog('ordering_dialog');
+const orderingDialog = new OrderingDialog('orderingDialog');
 const mainDialog = new MainDialog(null, orderingDialog);
 const pizzaBot = new PizzaBot(conversationState, userState, mainDialog);
 

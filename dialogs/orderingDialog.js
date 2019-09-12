@@ -20,9 +20,10 @@ class OrderingDialog extends CancelAndHelpDialog {
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new DateResolverDialog(DATE_RESOLVER_DIALOG))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-                this.destinationStep.bind(this),
-                this.originStep.bind(this),
-                this.travelDateStep.bind(this),
+                this.sizeStep.bind(this),
+                this.cheeseStep.bind(this),
+                this.toppingsStep.bind(this),
+                this.deliveryDateStep.bind(this),
                 this.confirmStep.bind(this),
                 this.finalStep.bind(this)
             ]));
@@ -31,48 +32,64 @@ class OrderingDialog extends CancelAndHelpDialog {
     }
 
     /**
-     * If a destination city has not been provided, prompt for one.
+     * If a size has not been provided, prompt for one.
      */
-    async destinationStep(stepContext) {
+    async sizeStep(stepContext) {
         const orderingDetails = stepContext.options;
 
-        if (!orderingDetails.destination) {
-            const messageText = 'To what city would you like to travel?';
+        if (!orderingDetails.size) {
+            const messageText = 'What size pizza would you like?';
             const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
         }
-        return await stepContext.next(orderingDetails.destination);
+        return await stepContext.next(orderingDetails.size);
     }
 
     /**
-     * If an origin city has not been provided, prompt for one.
+     * If the type of cheese has not been provided, prompt for one.
      */
-    async originStep(stepContext) {
+    async cheeseStep(stepContext) {
         const orderingDetails = stepContext.options;
 
         // Capture the response to the previous step's prompt
-        orderingDetails.destination = stepContext.result;
-        if (!orderingDetails.origin) {
-            const messageText = 'From what city will you be travelling?';
-            const msg = MessageFactory.text(messageText, 'From what city will you be travelling?', InputHints.ExpectingInput);
+        orderingDetails.size = stepContext.result;
+        if (!orderingDetails.cheese) {
+            const messageText = 'What kind of cheese would you like on your pizza?';
+            const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
         }
-        return await stepContext.next(orderingDetails.origin);
+        return await stepContext.next(orderingDetails.cheese);
+    }
+
+    /**
+     * If the type of cheese has not been provided, prompt for one.
+     */
+    async toppingsStep(stepContext) {
+        const orderingDetails = stepContext.options;
+
+        // Capture the response to the previous step's prompt
+        orderingDetails.cheese = stepContext.result;
+        if (!orderingDetails.toppings) {
+            const messageText = 'What kind of toppings would you like on your pizza?';
+            const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
+            return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
+        }
+        return await stepContext.next(orderingDetails.toppings);
     }
 
     /**
      * If a travel date has not been provided, prompt for one.
      * This will use the DATE_RESOLVER_DIALOG.
      */
-    async travelDateStep(stepContext) {
+    async deliveryDateStep(stepContext) {
         const orderingDetails = stepContext.options;
 
         // Capture the results of the previous step
-        orderingDetails.origin = stepContext.result;
-        if (!orderingDetails.travelDate || this.isAmbiguous(orderingDetails.travelDate)) {
-            return await stepContext.beginDialog(DATE_RESOLVER_DIALOG, { date: orderingDetails.travelDate });
+        orderingDetails.toppings = stepContext.result;
+        if (!orderingDetails.deliveryDate || this.isAmbiguous(orderingDetails.deliverylDate)) {
+            return await stepContext.beginDialog(DATE_RESOLVER_DIALOG, { date: orderingDetails.deliveryDate });
         }
-        return await stepContext.next(orderingDetails.travelDate);
+        return await stepContext.next(orderingDetails.deliveryDate);
     }
 
     /**
@@ -82,8 +99,8 @@ class OrderingDialog extends CancelAndHelpDialog {
         const orderingDetails = stepContext.options;
 
         // Capture the results of the previous step
-        orderingDetails.travelDate = stepContext.result;
-        const messageText = `Please confirm, I have you traveling to: ${ orderingDetails.destination } from: ${ orderingDetails.origin } on: ${ orderingDetails.travelDate }. Is this correct?`;
+        orderingDetails.deliveryDate = stepContext.result;
+        const messageText = `Please confirm, I a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery on ${ orderingDetails.deliveryDate }. Is this correct?`;
         const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 
         // Offer a YES/NO prompt.
