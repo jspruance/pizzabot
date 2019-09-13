@@ -149,7 +149,9 @@ class OrderingDialog extends CancelAndHelpDialog {
            time = time.slice(1);
         }
         const timeSegments = time.split(':');
-        return `${timeSegments[0]}:${timeSegments[1]}`;
+        const ampm = timeSegments[0] >= 12 ? 'pm' : 'am';
+        timeSegments[0] = timeSegments[0] >= 13 ? timeSegments[0] - 12 : timeSegments[0];
+        return `${timeSegments[0]}:${timeSegments[1]}${ampm}`;
     }
 
     isAmbiguous(timex) {

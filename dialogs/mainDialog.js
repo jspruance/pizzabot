@@ -86,10 +86,8 @@ class MainDialog extends ComponentDialog {
               return await stepContext.beginDialog('orderingDialog');
             default:
               const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way (intent was ${ LuisRecognizer.topIntent(luisResult) })`;
-              await stepContext.context.sendActivity(didntUnderstandMessageText);
+              return await stepContext.context.sendActivity(didntUnderstandMessageText);
         }
-
-        return await stepContext.next();
     }
 
     
