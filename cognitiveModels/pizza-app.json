@@ -1,0 +1,200 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "pizza-app",
+  "desc": "Cognitive model for ordering pizza.",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "None"
+    },
+    {
+      "name": "OrderPizza"
+    }
+  ],
+  "entities": [
+    {
+      "name": "deliveryTime",
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "cheese",
+      "subLists": [
+        {
+          "canonicalForm": "mozzarella",
+          "list": []
+        },
+        {
+          "canonicalForm": "cheddar",
+          "list": []
+        },
+        {
+          "canonicalForm": "no cheese",
+          "list": []
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "size",
+      "subLists": [
+        {
+          "canonicalForm": "large",
+          "list": []
+        },
+        {
+          "canonicalForm": "medium",
+          "list": []
+        },
+        {
+          "canonicalForm": "small",
+          "list": []
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "toppings",
+      "subLists": [
+        {
+          "canonicalForm": "pepperoni",
+          "list": [
+            "cheese"
+          ]
+        },
+        {
+          "canonicalForm": "olives",
+          "list": []
+        },
+        {
+          "canonicalForm": "peppers",
+          "list": []
+        },
+        {
+          "canonicalForm": "onions",
+          "list": []
+        },
+        {
+          "canonicalForm": "chicken",
+          "list": []
+        },
+        {
+          "canonicalForm": "meat",
+          "list": []
+        },
+        {
+          "canonicalForm": "mushrooms",
+          "list": []
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [
+    {
+      "pattern": "i want to order a [size] [toppings] pizza for [time].",
+      "intent": "OrderPizza"
+    },
+    {
+      "pattern": "i want to order a [size] [toppings] pizza with [cheese].",
+      "intent": "OrderPizza"
+    },
+    {
+      "pattern": "i want to order a [size] [toppings] pizza.",
+      "intent": "OrderPizza"
+    },
+    {
+      "pattern": "i want to order a [size] pizza",
+      "intent": "OrderPizza"
+    }
+  ],
+  "utterances": [
+    {
+      "text": "buy pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "get pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i want pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i want to order a large cheese pizza for delivery at 7",
+      "intent": "OrderPizza",
+      "entities": [
+        {
+          "entity": "deliveryTime",
+          "startPos": 53,
+          "endPos": 53
+        }
+      ]
+    },
+    {
+      "text": "i want to order a large pepperoni pizza for 7pm",
+      "intent": "OrderPizza",
+      "entities": [
+        {
+          "entity": "deliveryTime",
+          "startPos": 44,
+          "endPos": 46
+        }
+      ]
+    },
+    {
+      "text": "i want to order a pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i'd like a pizza with mozzarella cheese",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i'd like to order a large pepperoni pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i'd like to order a large pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "i'd like to order a pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "order a pizza",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "pizza delivery",
+      "intent": "OrderPizza",
+      "entities": []
+    },
+    {
+      "text": "place an order",
+      "intent": "OrderPizza",
+      "entities": []
+    }
+  ],
+  "settings": []
+}

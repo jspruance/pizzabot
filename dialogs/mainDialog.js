@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 const { MessageFactory, InputHints } = require('botbuilder');
+const { LuisRecognizer } = require('botbuilder-ai');
 // const { LuisRecognizer } = require('botbuilder-ai');
 const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 
@@ -11,8 +12,8 @@ class MainDialog extends ComponentDialog {
     constructor(luisRecognizer, orderingDialog) {
         super('MainDialog');
 
-        // if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
-        // this.luisRecognizer = luisRecognizer;
+        if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
+        this.luisRecognizer = luisRecognizer;
 
         if (!orderingDialog) throw new Error('[MainDialog]: Missing parameter \'orderingDialog\' is required');
 
@@ -52,11 +53,11 @@ class MainDialog extends ComponentDialog {
      * Note that the sample LUIS model will only recognize Paris, Berlin, New York and London as airport cities.
      */
     async introStep(stepContext) {
-        // if (!this.luisRecognizer.isConfigured) {
-        //     const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
-        //     await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
-        //     return await stepContext.next();
-        // }
+        if (!this.luisRecognizer.isConfigured) {
+          const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
+             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
+             return await stepContext.next();
+        }
 
         const messageText = stepContext.options.restartMsg ? stepContext.options.restartMsg : 'What can I help you with today?\nSay something like "order a pizza", "place an order" or "I\'m hungry"';
         const promptMessage = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
@@ -70,12 +71,23 @@ class MainDialog extends ComponentDialog {
     async actStep(stepContext) {
         const orderingDetails = {};
 
-        // if (!this.luisRecognizer.isConfigured) {
-        //     // LUIS is not configured, we just run the orderingDialog path.
-        //     return await stepContext.orderingDialog('orderingDialog');
-        // }
+        if (!this.luisRecognizer.isConfigured) {
+          // LUIS is not configured, we just run the orderingDialog path.
+          return await stepContext.orderingDialog('orderingDialog');
+        }
 
-        return await stepContext.beginDialog('orderingDialog');
+        const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+        const topIntent = LuisRecognizer.topIntent(luisResult);
+        console.log(luisResult);
+
+        // detect OrderPizza intent
+        switch (topIntent) {
+            case 'OrderPizza':
+              return await stepContext.beginDialog('orderingDialog');
+            default:
+              const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way (intent was ${ LuisRecognizer.topIntent(luisResult) })`;
+              await stepContext.context.sendActivity(didntUnderstandMessageText);
+        }
 
         return await stepContext.next();
     }

@@ -14,6 +14,8 @@ const { PizzaBot } = require('./bot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { OrderingDialog } = require('./dialogs/orderingDialog');
 
+const { PizzaOrderingRecognizer } = require('./pizzaOrderingRecognizer');
+
 // Import required bot configuration.
 const ENV_FILE = path.join(__dirname, '.env');
 dotenv.config({ path: ENV_FILE });
@@ -54,13 +56,13 @@ const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
 // If configured, pass in the OrderingRecognizer.  (Defining it externally allows it to be mocked for tests)
-// const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
-// const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
-// const luisRecognizer = new PizzaOrderRecognizer(luisConfig);
+const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
+const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
+const luisRecognizer = new PizzaOrderingRecognizer(luisConfig);
 
 // Create the main dialog.
 const orderingDialog = new OrderingDialog('orderingDialog');
-const mainDialog = new MainDialog(null, orderingDialog);
+const mainDialog = new MainDialog(luisRecognizer, orderingDialog);
 const pizzaBot = new PizzaBot(conversationState, userState, mainDialog);
 
 // Listen for incoming requests.
