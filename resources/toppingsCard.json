@@ -12,18 +12,18 @@
         },
         {
             "type": "TextBlock",
-            "text": "Choose as many as you want:"
+            "text": "Choose as many as you like:"
         },
         {
             "type": "Input.ChoiceSet",
-            "id": "MultiSelectVal",
+            "id": "strValues",
             "style": "expanded",
             "isMultiSelect": true,
             "value": "none",
             "choices": [
                 {
                     "title": "none",
-                    "value": "no toppings"
+                    "value": "none"
                 },
                 {
                     "title": "pepperoni",

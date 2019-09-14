@@ -20,6 +20,7 @@
         "botbuilder": "~4.5.1",
         "botbuilder-ai": "^4.5.3",
         "botbuilder-dialogs": "^4.5.3",
+        "botframework-schema": "^4.5.3",
         "dotenv": "~8.0.0",
         "restify": "~8.3.3"
     },

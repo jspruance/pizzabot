@@ -10,12 +10,12 @@
         {
             "type": "Image",
             "altText": "Pizza Bot",
-            "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/6/64/NYPizzaPie.jpg",
             "size": "stretch"
         },
         {
             "type": "TextBlock",
-            "text": "Fresh and delicious pizza, made with natural ingredients, delivered right to your door!",
+            "text": "Fresh and delicious New York-style pizza, made with natural ingredients, delivered right to your door!",
             "wrap": true
         }
     ],

@@ -3,7 +3,8 @@
 
 const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
 const { InputHints, MessageFactory } = require('botbuilder');
-const { ChoicePrompt, ConfirmPrompt, DateTimePrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { ActivityTypes } = require('botframework-schema');
+const { ActivityPrompt, ChoicePrompt, ConfirmPrompt, DateTimePrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CardFactory } = require('botbuilder');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const ToppingsCard = require('../resources/toppingsCard.json');
@@ -12,6 +13,7 @@ const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const SIZE_PROMPT = 'sizePrompt';
 const CHEESE_PROMPT = 'cheesePrompt';
+const TOPPINGS_PROMPT = 'toppingsPrompt';
 const DATETIME_PROMPT = 'datetimePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
@@ -22,6 +24,7 @@ class OrderingDialog extends CancelAndHelpDialog {
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ChoicePrompt(SIZE_PROMPT))
             .addDialog(new ChoicePrompt(CHEESE_PROMPT))
+            this.addDialog(new ActivityPrompt(TOPPINGS_PROMPT, this.toppingsPromptValidator))
             .addDialog(new DateTimePrompt(DATETIME_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -87,12 +90,27 @@ class OrderingDialog extends CancelAndHelpDialog {
         orderingDetails.cheese = stepContext.result.value;
 
         if (!orderingDetails.toppings) {
-            const toppingsCard = CardFactory.adaptiveCard(ToppingsCard);
-            await stepContext.context.sendActivity({ attachments: [toppingsCard] });
-           
+            const toppingsForm = MessageFactory.attachment(CardFactory.adaptiveCard(ToppingsCard));
+            return await stepContext.prompt(TOPPINGS_PROMPT, { prompt: toppingsForm });
         }
         return await stepContext.next(orderingDetails.toppings);
     }
+
+    async toppingsPromptValidator(prompt) {
+        // Only validate incoming messages
+        const activity = prompt.recognized.value;
+        if (activity.type === ActivityTypes.Message) {
+            if (activity.value) {
+                // Return value from prompt
+                prompt.recognized.value = activity.value;
+                return true;
+            } else {
+                // Reprompt user to fill in form
+                await prompt.context.sendActivity(`Please fill in form and press "submit" button.`);
+            }
+        }
+        return false;
+    };
 
     /**
      * If a travel date has not been provided, prompt for one.
@@ -102,10 +120,10 @@ class OrderingDialog extends CancelAndHelpDialog {
         // Capture the results of the previous step
         const orderingDetails = stepContext.options;
 
-        orderingDetails.toppings = stepContext.result;
+        orderingDetails.toppings = stepContext.result.strValues;
 
         const promptMessage = "What time would you like your pizza delivered?";
-        const repromptMessage = "I'm sorry, for best results, please enter  a valid delivery time.";
+        const repromptMessage = "I'm sorry, for best results, please enter a valid delivery time.";
 
         if (!orderingDetails.deliveryTime || this.isAmbiguous(orderingDetails.deliveryDate)) {
             // We were not given any date at all so prompt the user.
@@ -127,7 +145,7 @@ class OrderingDialog extends CancelAndHelpDialog {
 
         // Capture the results of the previous step
         orderingDetails.deliveryTime = this.formatTime(stepContext.result[0].value);
-        const messageText = `Please confirm, I a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery at ${ orderingDetails.deliveryTime }. Is this correct?`;
+        const messageText = `Please confirm, I have a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery at ${ orderingDetails.deliveryTime }. Is this correct?`;
         const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 
         // Offer a YES/NO prompt.
