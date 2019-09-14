@@ -15,7 +15,7 @@
         },
         {
             "type": "TextBlock",
-            "text": "We make fresh and delicious hand-crafted New York-style pizza, made with natural ingredients, delivered right to your door!",
+            "text": "We make fresh and delicious hand-crafted, artisnal New York-style pizza, made with natural ingredients, delivered right to your door!",
             "wrap": true
         }
     ],
