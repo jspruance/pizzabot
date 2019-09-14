@@ -1,0 +1,52 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+        {
+            "type": "TextBlock",
+            "size": "medium",
+            "weight": "bolder",
+            "text": "Select your toppings",
+            "horizontalAlignment": "center"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Choose as many as you want:"
+        },
+        {
+            "type": "Input.ChoiceSet",
+            "id": "MultiSelectVal",
+            "style": "expanded",
+            "isMultiSelect": true,
+            "value": "none",
+            "choices": [
+                {
+                    "title": "none",
+                    "value": "no toppings"
+                },
+                {
+                    "title": "pepperoni",
+                    "value": "pepperoni"
+                },
+                {
+                    "title": "mushrooms",
+                    "value": "mushrooms"
+                },
+                {
+                    "title": "olives",
+                    "value": "olives"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "Submit",
+            "data": {
+                "id": "toppings"
+            }
+        }
+    ]
+}

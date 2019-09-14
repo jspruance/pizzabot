@@ -4,10 +4,11 @@
 const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
 const { InputHints, MessageFactory } = require('botbuilder');
 const { ChoicePrompt, ConfirmPrompt, DateTimePrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { CardFactory } = require('botbuilder');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
+const ToppingsCard = require('../resources/toppingsCard.json');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
-const DATE_RESOLVER_DIALOG = 'dateResolverDialog';
 const TEXT_PROMPT = 'textPrompt';
 const SIZE_PROMPT = 'sizePrompt';
 const CHEESE_PROMPT = 'cheesePrompt';
@@ -86,9 +87,9 @@ class OrderingDialog extends CancelAndHelpDialog {
         orderingDetails.cheese = stepContext.result.value;
 
         if (!orderingDetails.toppings) {
-            const messageText = 'What kind of toppings would you like on your pizza?';
-            const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
-            return await stepContext.prompt(TEXT_PROMPT, { prompt: msg });
+            const toppingsCard = CardFactory.adaptiveCard(ToppingsCard);
+            await stepContext.context.sendActivity({ attachments: [toppingsCard] });
+           
         }
         return await stepContext.next(orderingDetails.toppings);
     }
