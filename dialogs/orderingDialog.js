@@ -121,6 +121,7 @@ class OrderingDialog extends CancelAndHelpDialog {
         const orderingDetails = stepContext.options;
 
         orderingDetails.toppings = stepContext.result.strValues;
+        orderingDetails.toppings = this.formatToppings(orderingDetails.toppings);
 
         const promptMessage = "What time would you like your pizza delivered?";
         const repromptMessage = "I'm sorry, for best results, please enter a valid delivery time.";
@@ -161,6 +162,20 @@ class OrderingDialog extends CancelAndHelpDialog {
             return await stepContext.endDialog(orderingDetails);
         }
         return await stepContext.endDialog();
+    }
+
+    formatToppings (toppingsStr) {
+        const toppingsArry = toppingsStr.split(',');
+        if (toppingsArry.length > 1) {
+            toppingsArry[toppingsArry.length -2] = 'and';
+        }
+        const reducer = (accumulator, currentValue, index, toppingsArry) => {
+          if (currentValue !== 'and' && index !== toppingsArry.length -1) {
+              return `${accumulator}, ${currentValue}`;
+          }
+          return `${accumulator} ${currentValue}`;
+        }
+        return toppingsArry.reduce(reducer);
     }
 
     formatTime (time) {
