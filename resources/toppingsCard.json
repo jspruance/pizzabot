@@ -19,12 +19,8 @@
             "id": "strValues",
             "style": "expanded",
             "isMultiSelect": true,
-            "value": "none",
+            "value": "",
             "choices": [
-                {
-                    "title": "none",
-                    "value": "none"
-                },
                 {
                     "title": "pepperoni",
                     "value": "pepperoni"

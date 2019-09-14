@@ -120,8 +120,10 @@ class OrderingDialog extends CancelAndHelpDialog {
         // Capture the results of the previous step
         const orderingDetails = stepContext.options;
 
-        orderingDetails.toppings = stepContext.result.strValues;
-        orderingDetails.toppings = this.formatToppings(orderingDetails.toppings);
+        orderingDetails.toppings = stepContext.result.strValues ? stepContext.result.strValues : '';
+        if (orderingDetails.toppings) {
+          orderingDetails.toppings = this.formatToppings(orderingDetails.toppings);
+        }
 
         const promptMessage = "What time would you like your pizza delivered?";
         const repromptMessage = "I'm sorry, for best results, please enter a valid delivery time.";
@@ -146,7 +148,9 @@ class OrderingDialog extends CancelAndHelpDialog {
 
         // Capture the results of the previous step
         orderingDetails.deliveryTime = this.formatTime(stepContext.result[0].value);
-        const messageText = `Please confirm, I have a ${ orderingDetails.size } pizza with ${ orderingDetails.cheese } cheese and ${ orderingDetails.toppings } for delivery at ${ orderingDetails.deliveryTime }. Is this correct?`;
+        const messageText = `Please confirm, I have a ${ orderingDetails.size } pizza with 
+          ${ orderingDetails.cheese } cheese ${ orderingDetails.toppings ? 'and' : '' } 
+          ${ orderingDetails.toppings } for delivery at ${ orderingDetails.deliveryTime }. Is this correct?`;
         const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 
         // Offer a YES/NO prompt.
@@ -167,7 +171,7 @@ class OrderingDialog extends CancelAndHelpDialog {
     formatToppings (toppingsStr) {
         const toppingsArry = toppingsStr.split(',');
         if (toppingsArry.length > 1) {
-            toppingsArry[toppingsArry.length -2] = 'and';
+          toppingsArry.splice(toppingsArry.length-1, 0, 'and');
         }
         const reducer = (accumulator, currentValue, index, toppingsArry) => {
           if (currentValue !== 'and' && index !== toppingsArry.length -1) {
