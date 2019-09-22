@@ -15,25 +15,80 @@
             "text": "Choose as many as you like:"
         },
         {
-            "type": "Input.ChoiceSet",
-            "id": "strValues",
-            "style": "expanded",
-            "isMultiSelect": true,
-            "value": "",
-            "choices": [
-                {
-                    "title": "pepperoni",
-                    "value": "pepperoni"
-                },
-                {
-                    "title": "mushrooms",
-                    "value": "mushrooms"
-                },
-                {
-                    "title": "olives",
-                    "value": "olives"
-                }
-            ]
+            "type": "ColumnSet",
+            "columns": [
+            {
+                "type": "Column",
+                "width": 2,
+                "items": [
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "strValues",
+                        "style": "expanded",
+                        "isMultiSelect": true,
+                        "value": "",
+                        "choices": [
+                            {
+                                "title": "pepperoni",
+                                "value": "pepperoni"
+                            },
+                            {
+                                "title": "mushrooms",
+                                "value": "mushrooms"
+                            },
+                            {
+                                "title": "olives",
+                                "value": "olives"
+                            },
+                            {
+                                "title": "red onions",
+                                "value": "red onions"
+                            },
+                            {
+                                "title": "green peppers",
+                                "value": "green peppers"
+                            },
+                            {
+                                "title": "banana peppers",
+                                "value": "banana peppers"
+                            },
+                            {
+                                "title": "jalapeno peppers",
+                                "value": "jalapeno peppers"
+                            },
+                            {
+                                "title": "artichokes",
+                                "value": "artichokes"
+                            },
+                            {
+                                "title": "sun-dried tomatoes",
+                                "value": "sun-dried tomatoes"
+                            },
+                            {
+                                "title": "basil",
+                                "value": "basil"
+                            },
+                            {
+                                "title": "pineapple",
+                                "value": "pineapple"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Column",
+                "width": 1,
+                "items": [
+                  {
+                    "type": "Image",
+                    "url": "https://therecipecritic.com/wp-content/uploads/2018/08/zucchini_crust_pizza-1-of-1.jpg",
+                    "size": "auto"
+                  }
+                ]
+            }
+          ]
+          
         }
     ],
     "actions": [

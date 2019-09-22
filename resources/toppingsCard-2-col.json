@@ -1,0 +1,78 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+      {
+          "type": "TextBlock",
+          "size": "Medium",
+          "weight": "Bolder",
+          "text": "Select your toppings",
+          "horizontalAlignment": "Center"
+      },
+      {
+          "type": "TextBlock",
+          "text": "Choose as many as you like:"
+      },
+      {
+          "type": "ColumnSet",
+          "columns": [
+              {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                      {
+                          "type": "Input.ChoiceSet",
+                          "placeholder": "Placeholder text",
+                          "id":"toppings1",
+                          "multiSelect": true,
+                          "choices": [
+                              {
+                                  "title": "pepperoni",
+                                  "value": "pepperoni"
+                              },
+                              {
+                                  "title": "olives",
+                                  "value": "olives"
+                              }
+                          ],
+                          "style": "expanded"
+                      }
+                  ]
+              },
+              {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                      {
+                          "type": "Input.ChoiceSet",
+                          "placeholder": "Placeholder text",
+                          "multiSelect": true,
+                          "id":"toppings2",
+                          "choices": [
+                              {
+                                  "title": "mushrooms",
+                                  "value": "mushrooms"
+                              },
+                              {
+                                  "title": "green peppers",
+                                  "value": "green peppers"
+                              }
+                          ],
+                          "style": "expanded"
+                      }
+                  ]
+              }
+          ]
+      }
+  ],
+  "actions": [
+      {
+          "type": "Action.Submit",
+          "title": "Submit",
+          "data": {
+              "id": "toppings"
+          }
+      }
+  ]
+}

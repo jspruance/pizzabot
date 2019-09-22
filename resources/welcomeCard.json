@@ -3,8 +3,8 @@
     "body": [
         {
             "type": "TextBlock",
-            "size": "default",
-            "weight": "default",
+            "weight": "bolder",
+            "size": "medium",
             "text": "Welcome to Uncle Albert's Pizza!"
         },
         {
